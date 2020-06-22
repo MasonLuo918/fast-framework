@@ -2,9 +2,10 @@ package com.masonluo.fastframework.beans.support.reader;
 
 import com.masonluo.fastframework.beans.factory.config.beanDefinition.AnnotationBeanDefinition;
 import com.masonluo.fastframework.beans.factory.config.beanDefinition.StandardAnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.support.AnnotationBeanNameGenerator;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
-import com.masonluo.fastframework.utils.AnnotationProcessUtils;
-import com.sun.deploy.util.StringUtils;
+import com.masonluo.fastframework.beans.support.BeanNameGenerator;
+import com.masonluo.fastframework.utils.AnnotationConfigUtils;
 
 /**
  * @author masonluo
@@ -14,7 +15,9 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
 
     private BeanDefinitionRegistry registry;
 
-    public AnnotationBeanDefinitionReader(BeanDefinitionRegistry registry){
+    private BeanNameGenerator generator = new AnnotationBeanNameGenerator();
+
+    public AnnotationBeanDefinitionReader(BeanDefinitionRegistry registry) {
         this.registry = registry;
     }
 
@@ -32,7 +35,7 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
     }
 
     public void register(Class<?>... classes) {
-        for (Class<?> clazz : classes){
+        for (Class<?> clazz : classes) {
             registerBean(clazz);
         }
     }
@@ -40,8 +43,9 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
     private void registerBean(Class<?> clazz) {
         AnnotationBeanDefinition beanDefinition = new StandardAnnotationBeanDefinition(clazz);
         // 处理通用的注解
-        AnnotationProcessUtils.processCommonAnnotation(beanDefinition);
-
+        AnnotationConfigUtils.processCommonAnnotation(beanDefinition);
+        String beanName = generator.generateBeanName(beanDefinition, registry);
+        registry.registryBeanDefinition(beanName, beanDefinition);
     }
 
     @Override
@@ -52,4 +56,5 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
         }
         return count;
     }
+
 }

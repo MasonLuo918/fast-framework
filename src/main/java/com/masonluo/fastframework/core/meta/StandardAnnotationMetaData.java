@@ -1,6 +1,6 @@
 package com.masonluo.fastframework.core.meta;
 
-import com.masonluo.fastframework.utils.AnnotationProcessUtils;
+import com.masonluo.fastframework.utils.AnnotationConfigUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class StandardAnnotationMetaData implements AnnotationMetaData {
     }
 
     public static void main(String[] args) {
-        StandardAnnotationMetaData metaData = new StandardAnnotationMetaData(AnnotationProcessUtils.class);
+        StandardAnnotationMetaData metaData = new StandardAnnotationMetaData(AnnotationConfigUtils.class);
         for (String str : metaData.getAnnotationType()){
             System.out.println(str);
         }

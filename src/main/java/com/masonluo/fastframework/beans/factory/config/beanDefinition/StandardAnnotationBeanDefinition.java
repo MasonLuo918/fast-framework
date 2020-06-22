@@ -13,6 +13,7 @@ public class StandardAnnotationBeanDefinition extends AbstractBeanDefinition imp
     public StandardAnnotationBeanDefinition(Class<?> beanClass) {
         annotationMetaData = new StandardAnnotationMetaData(beanClass);
         setBeanClass(beanClass);
+        setBeanClassName(beanClass.getName());
     }
 
     @Override

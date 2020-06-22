@@ -1,12 +1,17 @@
 package com.masonluo.fastframework.utils;
 
 import com.masonluo.fastframework.beans.factory.config.beanDefinition.AnnotationBeanDefinition;
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.StandardAnnotationBeanDefinition;
 import com.masonluo.fastframework.core.annotation.Lazy;
 import com.masonluo.fastframework.core.annotation.Primary;
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author masonluo
@@ -14,7 +19,7 @@ import java.lang.annotation.Annotation;
  */
 @Lazy(value = false)
 @Primary(value = false)
-public class AnnotationProcessUtils {
+public class AnnotationConfigUtils {
     /**
      * 处理通用的注解
      * {@link com.masonluo.fastframework.core.annotation.Lazy}
@@ -38,11 +43,21 @@ public class AnnotationProcessUtils {
             beanDefinition.setLazyInit(lazy.value());
         }
         Primary primary = getAnnotation(metaData, Primary.class);
-        if (lazy != null) {
-            beanDefinition.setPrimary(true);
+        if (primary != null) {
+            beanDefinition.setPrimary(primary.value());
         }
     }
 
+    /**
+     * 根据类型，获取AnnotationMetaData中的注解
+     * <p>
+     * 做类型转换
+     *
+     * @param metaData
+     * @param type
+     * @param <T>
+     * @return
+     */
     public static <T> T getAnnotation(AnnotationMetaData metaData, Class<T> type) {
         Annotation annotation = metaData.getAnnotation(type);
         if (annotation != null) {
@@ -51,9 +66,24 @@ public class AnnotationProcessUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        AnnotationBeanDefinition annotationBeanDefinition = new StandardAnnotationBeanDefinition(AnnotationProcessUtils.class);
-        processCommonAnnotation(annotationBeanDefinition);
-        System.out.println();
+    public static Map<String, Object> toMap(AnnotationMetaData metaData, Class<?> clazz) {
+        Map<String, Object> attrMap = new HashMap<>();
+        Annotation[] annotations = metaData.getAnnotations();
+        if (annotations == null || annotations.length == 0) {
+            return attrMap;
+        }
+        Annotation annotation = Arrays.stream(annotations)
+                .filter(a -> a.annotationType().equals(clazz))
+                .findFirst().get();
+        Method[] methods = annotation.annotationType().getDeclaredMethods();
+        Stream.of(methods).forEach(action -> {
+            try {
+                attrMap.put(action.getName(), action.invoke(annotation, (Object[]) null));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalArgumentException();
+            }
+        });
+        return attrMap;
     }
+
 }
