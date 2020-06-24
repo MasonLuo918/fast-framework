@@ -1,5 +1,8 @@
 package com.masonluo.fastframework.core.annotation;
 
+import com.masonluo.fastframework.core.meta.StandardAnnotationMetaData;
+import com.masonluo.fastframework.utils.AnnotationConfigUtils;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -23,5 +26,13 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 
     public static AnnotationAttributes fromMap(Map<String, Object> map) {
         return new AnnotationAttributes(map);
+    }
+
+    public static void main(String[] args) {
+        AnnotationAttributes annotationAttributes = fromMap(
+                AnnotationConfigUtils.toMap(new StandardAnnotationMetaData(AnnotationConfigUtils.class), Lazy.class)
+        );
+        System.out.println(annotationAttributes.size());
+
     }
 }

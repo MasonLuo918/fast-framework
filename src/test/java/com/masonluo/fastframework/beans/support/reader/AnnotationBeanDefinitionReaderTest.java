@@ -1,6 +1,6 @@
 package com.masonluo.fastframework.beans.support.reader;
 
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.BeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class AnnotationBeanDefinitionReaderTest {
             }
 
             @Override
-            public String[] getBeanNames() {
+            public String[] getBeanDefinitionNames() {
                 return new String[0];
             }
 

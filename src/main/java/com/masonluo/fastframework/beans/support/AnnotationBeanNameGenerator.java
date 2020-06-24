@@ -1,9 +1,8 @@
 package com.masonluo.fastframework.beans.support;
 
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.AnnotationBeanDefinition;
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.BeanDefinition;
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.StandardAnnotationBeanDefinition;
-import com.masonluo.fastframework.beans.stereotype.Controller;
+import com.masonluo.fastframework.beans.factory.config.AnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.StandardAnnotationBeanDefinition;
 import com.masonluo.fastframework.core.annotation.AnnotationAttributes;
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
 import com.masonluo.fastframework.exception.BeanDefinitionExistException;
@@ -27,6 +26,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
         } else {
             return null;
         }
+        // 优先根据注解里面的值生成BeanName
         String beanName = generateBeanNameFromAnnotation(beanDefinition.getAnnotationMetaData());
         if (StringUtils.isBlank(beanName)) {
             beanName = generateDefaultBeanName(definition);
@@ -43,6 +43,12 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
         return StringUtils.firstToLowerCase(ClassUtils.getSimpleName(beanClassName));
     }
 
+    /**
+     * 根据注解的value生成beanName
+     * TODO 只能根据特定注解生成，比如{@link com.masonluo.fastframework.beans.stereotype.Component}
+     * @param annotationMetaData
+     * @return
+     */
     private String generateBeanNameFromAnnotation(AnnotationMetaData annotationMetaData) {
         String beanName = "";
         String strVal;
@@ -83,7 +89,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
             }
 
             @Override
-            public String[] getBeanNames() {
+            public String[] getBeanDefinitionNames() {
                 return new String[0];
             }
 

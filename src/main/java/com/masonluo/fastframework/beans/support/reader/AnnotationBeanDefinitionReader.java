@@ -1,7 +1,7 @@
 package com.masonluo.fastframework.beans.support.reader;
 
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.AnnotationBeanDefinition;
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.StandardAnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.AnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.StandardAnnotationBeanDefinition;
 import com.masonluo.fastframework.beans.support.AnnotationBeanNameGenerator;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
 import com.masonluo.fastframework.beans.support.BeanNameGenerator;
@@ -13,8 +13,11 @@ import com.masonluo.fastframework.utils.AnnotationConfigUtils;
  */
 public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
 
-    private BeanDefinitionRegistry registry;
+    private final BeanDefinitionRegistry registry;
 
+    /**
+     * 生成BeanName
+     */
     private BeanNameGenerator generator = new AnnotationBeanNameGenerator();
 
     public AnnotationBeanDefinitionReader(BeanDefinitionRegistry registry) {
@@ -45,6 +48,9 @@ public class AnnotationBeanDefinitionReader implements BeanDefinitionReader {
         // 处理通用的注解
         AnnotationConfigUtils.processCommonAnnotation(beanDefinition);
         String beanName = generator.generateBeanName(beanDefinition, registry);
+        if (beanName == null){
+            throw new IllegalStateException("bean name generate error!");
+        }
         registry.registryBeanDefinition(beanName, beanDefinition);
     }
 

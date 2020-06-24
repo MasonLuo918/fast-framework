@@ -1,4 +1,4 @@
-package com.masonluo.fastframework.beans.factory.config.beanDefinition;
+package com.masonluo.fastframework.beans.factory.config;
 
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
 

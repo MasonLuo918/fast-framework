@@ -1,6 +1,6 @@
 package com.masonluo.fastframework.beans.support;
 
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.BeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
 
 /**
  * @author masonluo

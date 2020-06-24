@@ -1,6 +1,6 @@
 package com.masonluo.fastframework.utils;
 
-import com.masonluo.fastframework.beans.factory.config.beanDefinition.AnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.AnnotationBeanDefinition;
 import com.masonluo.fastframework.core.annotation.Lazy;
 import com.masonluo.fastframework.core.annotation.Primary;
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
@@ -17,7 +17,6 @@ import java.util.stream.Stream;
  * @author masonluo
  * @date 2020/6/22 5:25 PM
  */
-@Lazy(value = false)
 @Primary(value = false)
 public class AnnotationConfigUtils {
     /**
@@ -72,16 +71,17 @@ public class AnnotationConfigUtils {
         if (annotations == null || annotations.length == 0) {
             return attrMap;
         }
-        Annotation annotation = Arrays.stream(annotations)
+        Arrays.stream(annotations)
                 .filter(a -> a.annotationType().equals(clazz))
-                .findFirst().get();
-        Method[] methods = annotation.annotationType().getDeclaredMethods();
-        Stream.of(methods).forEach(action -> {
-            try {
-                attrMap.put(action.getName(), action.invoke(annotation, (Object[]) null));
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new IllegalArgumentException();
-            }
+                .findFirst().ifPresent(anno -> {
+            Method[] methods = anno.annotationType().getDeclaredMethods();
+            Stream.of(methods).forEach(action -> {
+                try {
+                    attrMap.put(action.getName(), action.invoke(anno, (Object[]) null));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            });
         });
         return attrMap;
     }

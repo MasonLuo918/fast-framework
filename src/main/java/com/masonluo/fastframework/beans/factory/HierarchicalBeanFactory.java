@@ -6,6 +6,9 @@ package com.masonluo.fastframework.beans.factory;
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
 
+    /**
+     * 获取该BeanFactory的父BeanFactory
+     */
     BeanFactory getParentBeanFactory();
 
     /**

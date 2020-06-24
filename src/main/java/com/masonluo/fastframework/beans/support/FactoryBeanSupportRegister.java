@@ -14,7 +14,7 @@ public class FactoryBeanSupportRegister extends DefaultSingletonBeanRegistry {
     /**
      * 用来缓存FactoryBean生成的object
      */
-    private Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<>();
+    private final Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<>();
 
     public Class<?> getTypeForBeanFactory(FactoryBean<?> factoryBean) {
         return factoryBean.getObjectType();

@@ -1,4 +1,4 @@
-package com.masonluo.fastframework.beans.factory.config.beanDefinition;
+package com.masonluo.fastframework.beans.factory.config;
 
 import com.masonluo.fastframework.beans.MultiPropertyValues;
 import com.masonluo.fastframework.core.AttributeAccessor;
@@ -11,11 +11,6 @@ import com.masonluo.fastframework.core.AttributeAccessor;
  */
 public interface BeanDefinition extends AttributeAccessor {
 
-
-    String SCOPE_SINGLETON = "singleton";
-
-    String SCOPE_PROTOTYPE = "prototype";
-
     void setLazyInit(boolean lazyInit);
 
     /**
@@ -24,7 +19,7 @@ public interface BeanDefinition extends AttributeAccessor {
     boolean isLazyInit();
 
     /**
-     * 获取scope，目前只有单例和原型，默认为singleton
+     * 获取scope
      */
     String getScope();
 

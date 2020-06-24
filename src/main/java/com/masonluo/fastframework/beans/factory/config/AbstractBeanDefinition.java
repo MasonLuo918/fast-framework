@@ -1,4 +1,4 @@
-package com.masonluo.fastframework.beans.factory.config.beanDefinition;
+package com.masonluo.fastframework.beans.factory.config;
 
 import com.masonluo.fastframework.beans.MultiPropertyValues;
 import com.masonluo.fastframework.core.AttributeAccessorSupport;
@@ -9,7 +9,7 @@ import com.masonluo.fastframework.core.AttributeAccessorSupport;
  */
 public abstract class AbstractBeanDefinition extends AttributeAccessorSupport implements BeanDefinition {
 
-    private final static String SCOPE_DEFAULT = SCOPE_SINGLETON;
+    private final static String SCOPE_DEFAULT = SCOPE.DEFAULT;
 
     private boolean lazyInit = false;
 
@@ -21,7 +21,7 @@ public abstract class AbstractBeanDefinition extends AttributeAccessorSupport im
 
     private Class<?> beanClass;
 
-    private boolean isPrimary;
+    private boolean isPrimary = false;
 
     private MultiPropertyValues propertyValues;
 
@@ -102,5 +102,49 @@ public abstract class AbstractBeanDefinition extends AttributeAccessorSupport im
     @Override
     public MultiPropertyValues getConstructorPropertyValues() {
         return constructPropertyValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractBeanDefinition)) return false;
+
+        AbstractBeanDefinition that = (AbstractBeanDefinition) o;
+
+        if (isLazyInit() != that.isLazyInit()) return false;
+        if (isPrimary() != that.isPrimary()) return false;
+        if (!getScope().equals(that.getScope())) return false;
+        if (!getBeanName().equals(that.getBeanName())) return false;
+        if (!getBeanClassName().equals(that.getBeanClassName())) return false;
+        if (!getBeanClass().equals(that.getBeanClass())) return false;
+        if (!getPropertyValues().equals(that.getPropertyValues())) return false;
+        return constructPropertyValues.equals(that.constructPropertyValues);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (isLazyInit() ? 1 : 0);
+        result = 31 * result + getScope().hashCode();
+        result = 31 * result + getBeanName().hashCode();
+        result = 31 * result + getBeanClassName().hashCode();
+        result = 31 * result + getBeanClass().hashCode();
+        result = 31 * result + (isPrimary() ? 1 : 0);
+        result = 31 * result + getPropertyValues().hashCode();
+        result = 31 * result + constructPropertyValues.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractBeanDefinition{" +
+                "lazyInit=" + lazyInit +
+                ", scope='" + scope + '\'' +
+                ", beanName='" + beanName + '\'' +
+                ", beanClassName='" + beanClassName + '\'' +
+                ", beanClass=" + beanClass +
+                ", isPrimary=" + isPrimary +
+                ", propertyValues=" + propertyValues +
+                ", constructPropertyValues=" + constructPropertyValues +
+                '}';
     }
 }

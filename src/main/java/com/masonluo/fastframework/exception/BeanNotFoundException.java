@@ -4,7 +4,7 @@ package com.masonluo.fastframework.exception;
  * @author masonluo
  * @date 2020/6/20 6:46 PM
  */
-public class BeanNotFoundException extends Exception {
+public class BeanNotFoundException extends BeansException {
 
     public BeanNotFoundException() {
         this("The bean dose not found in the bean factory");

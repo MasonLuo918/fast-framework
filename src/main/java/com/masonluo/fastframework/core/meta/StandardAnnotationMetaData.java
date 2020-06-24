@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  */
 public class StandardAnnotationMetaData implements AnnotationMetaData {
 
-    private Class<?> originClass;
+    private final Class<?> originClass;
 
     private Annotation[] annotations;
 
@@ -39,5 +39,9 @@ public class StandardAnnotationMetaData implements AnnotationMetaData {
         for (String str : metaData.getAnnotationType()){
             System.out.println(str);
         }
+    }
+
+    public Class<?> getOriginClass() {
+        return originClass;
     }
 }

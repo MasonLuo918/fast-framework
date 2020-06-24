@@ -1,6 +1,7 @@
 package com.masonluo.fastframework.beans.factory;
 
 import com.masonluo.fastframework.exception.BeanNotFoundException;
+import com.masonluo.fastframework.exception.BeansException;
 
 /**
  * Ioc 顶层设计，用于获取Bean
@@ -10,6 +11,16 @@ import com.masonluo.fastframework.exception.BeanNotFoundException;
  */
 public interface BeanFactory {
 
+    String SCOPE_SINGLETON = "singleton";
+
+    String SCOPE_PROTOTYPE = "prototype";
+
+    /**
+     * FactoryBean的前缀
+     * <p>
+     * 如果用{@link BeanFactory#getBean(String) 去获取一个Bean的时候，如果前缀为&{beanName}
+     * 就获取这个Bean的{@link FactoryBean}
+     */
     String BEAN_FACTORY_PREFIX = "&";
 
     /**
@@ -19,9 +30,26 @@ public interface BeanFactory {
      */
     Object getBean(String beanName) throws BeanNotFoundException;
 
-    <T> T getBean(Class<T> requiredType);
+    /**
+     * 根据beanName获取一个bean，requiredType是获取这个bean的类型
+     * <p>
+     * 如果类型不符合，会抛出异常
+     */
+    <T> T getBean(String beanName, Class<T> requiredType) throws BeansException;
 
+    /**
+     * 根据requiredType来获取一个符合类型的bean
+     * TODO 构造一个class-beanName map，用来查找所需类型的bean
+     */
+    <T> T getBean(Class<T> requiredType) throws BeansException;
+
+    /**
+     * 判断一个bean是否是单例
+     */
     boolean isSingleton(String beanName);
 
+    /**
+     * 判断一个bean是否是原型模式
+     */
     boolean isPrototype(String beanName);
 }

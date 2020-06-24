@@ -67,4 +67,26 @@ public class MultiPropertyValues implements PropertyValues {
     public int propertyValueCount() {
         return propertyValueList.size();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MultiPropertyValues)) return false;
+
+        MultiPropertyValues that = (MultiPropertyValues) o;
+
+        return propertyValueList != null ? propertyValueList.equals(that.propertyValueList) : that.propertyValueList == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return propertyValueList != null ? propertyValueList.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiPropertyValues{" +
+                "propertyValueList=" + propertyValueList +
+                '}';
+    }
 }
