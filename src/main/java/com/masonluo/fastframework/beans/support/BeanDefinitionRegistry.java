@@ -13,7 +13,7 @@ public interface BeanDefinitionRegistry {
 
     int getBeanDefinitionCount();
 
-    String[] getBeanNames();
+    String[] getBeanDefinitionNames();
 
     boolean containsBeanDefinition(String beanName);
 }

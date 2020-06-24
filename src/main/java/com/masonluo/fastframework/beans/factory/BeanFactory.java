@@ -9,12 +9,19 @@ import com.masonluo.fastframework.exception.BeanNotFoundException;
  * @date 2020/6/20 6:46 PM
  */
 public interface BeanFactory {
+
+    String BEAN_FACTORY_PREFIX = "&";
+
     /**
      * 根据定义的beanName获取baen
-     *
+     * <p>
      * 如果BeanName没有额外设置的话，默认是Bean的Class的Simplename，并且第一个字母小写
      */
     Object getBean(String beanName) throws BeanNotFoundException;
 
     <T> T getBean(Class<T> requiredType);
+
+    boolean isSingleton(String beanName);
+
+    boolean isPrototype(String beanName);
 }
