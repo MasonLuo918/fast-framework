@@ -7,7 +7,7 @@ import com.masonluo.fastframework.core.meta.StandardAnnotationMetaData;
  * @author masonluo
  * @date 2020/6/22 2:26 PM
  */
-public class StandardAnnotationBeanDefinition extends AbstractBeanDefinition implements AnnotationBeanDefinition {
+public class StandardAnnotationBeanDefinition extends GenericBeanDefinition implements AnnotationBeanDefinition {
     private AnnotationMetaData annotationMetaData;
 
     public StandardAnnotationBeanDefinition(Class<?> beanClass) {

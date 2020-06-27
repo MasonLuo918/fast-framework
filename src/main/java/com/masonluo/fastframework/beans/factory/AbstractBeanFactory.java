@@ -2,6 +2,7 @@ package com.masonluo.fastframework.beans.factory;
 
 import com.masonluo.fastframework.beans.factory.config.AbstractBeanDefinition;
 import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
+import com.masonluo.fastframework.beans.factory.config.GenericBeanDefinition;
 import com.masonluo.fastframework.beans.support.FactoryBeanSupportRegister;
 import com.masonluo.fastframework.exception.BeanCurrentlyInCreationException;
 import com.masonluo.fastframework.exception.BeanNotFoundException;
@@ -88,7 +89,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
             if (!(definition instanceof AbstractBeanDefinition)) {
                 throw new IllegalArgumentException("this bean definition does not support");
             }
-            AbstractBeanDefinition beanDefinition = (AbstractBeanDefinition) definition;
+            GenericBeanDefinition beanDefinition = (GenericBeanDefinition) definition;
             if (beanDefinition.isSingleton()) {
                 shareSingleton = getSingleton(beanName, () -> {
                     return createBean(beanName, beanDefinition);
@@ -214,7 +215,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
 
     protected abstract boolean containsBeanDefinition(String beanName);
 
-    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition);
+    protected abstract Object createBean(String beanName, GenericBeanDefinition beanDefinition);
 
     protected abstract BeanDefinition getBeanDefinition(String beanName);
 
