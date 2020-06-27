@@ -186,7 +186,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
 
         // BeanFactory
         FactoryBean factoryBean = (FactoryBean) shareSingleton;
-        return factoryBean.getObject();
+        return getObjectFromBeanInstance(factoryBean, beanName);
     }
 
     @Override
