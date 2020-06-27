@@ -60,4 +60,12 @@ public interface BeanDefinition extends AttributeAccessor {
      * @return
      */
     MultiPropertyValues getConstructorPropertyValues();
+
+    default boolean isSingleton(){
+        return getScope().equals(SCOPE.SINGLETON);
+    }
+
+    default boolean isPrototype(){
+        return getScope().equals(SCOPE.PROTOTYPE);
+    }
 }

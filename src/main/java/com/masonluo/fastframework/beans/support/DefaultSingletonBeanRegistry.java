@@ -4,6 +4,7 @@ import com.masonluo.fastframework.beans.factory.ObjectFactory;
 import com.masonluo.fastframework.utils.Assert;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -180,5 +181,16 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     public Object getSingletonMutex() {
         return singletonMutex;
+    }
+
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "hello");
+        map.put("2", "hi");
+        for (Map.Entry<String, String> entry : map.entrySet()){
+            if (entry.getKey().equals("1")){
+                map.put("2", "nihao");
+            }
+        }
     }
 }

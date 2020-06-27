@@ -21,7 +21,7 @@ public interface BeanFactory {
      * 如果用{@link BeanFactory#getBean(String) 去获取一个Bean的时候，如果前缀为&{beanName}
      * 就获取这个Bean的{@link FactoryBean}
      */
-    String BEAN_FACTORY_PREFIX = "&";
+    String FACTORY_BEAN_PREFIX = "&";
 
     /**
      * 根据定义的beanName获取baen
