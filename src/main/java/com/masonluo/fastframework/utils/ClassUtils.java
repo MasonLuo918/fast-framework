@@ -11,6 +11,26 @@ public class ClassUtils {
         return names[names.length - 1];
     }
 
+    public static boolean equalIgnoreClassLoader(Class<?> clazz1, Class<?> clazz2) {
+        if (clazz1 == null && clazz2 == null) {
+            return true;
+        }
+        if (clazz1 == null || clazz2 == null) {
+            return false;
+        }
+        return StringUtils.isEqual(clazz1.getName(), clazz2.getName());
+    }
+
+    public static boolean equal(Class<?> clazz1, Class<?> clazz2) {
+        if (clazz1 == null && clazz2 == null) {
+            return true;
+        }
+        if (clazz1 == null || clazz2 == null) {
+            return false;
+        }
+        return clazz1.equals(clazz2);
+    }
+
     public static void main(String[] args) {
         System.out.println(getSimpleName("com.masonluo.Annotation"));
     }

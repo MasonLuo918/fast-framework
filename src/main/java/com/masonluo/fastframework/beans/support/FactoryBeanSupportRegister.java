@@ -16,6 +16,11 @@ public class FactoryBeanSupportRegister extends DefaultSingletonBeanRegistry {
      */
     private final Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<>();
 
+
+    protected Object getCachedObjectForFactoryBean(String beanName) {
+        return factoryBeanObjectCache.get(beanName);
+    }
+
     public Class<?> getTypeForBeanFactory(FactoryBean<?> factoryBean) {
         return factoryBean.getObjectType();
     }

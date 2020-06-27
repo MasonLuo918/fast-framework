@@ -184,9 +184,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
             return shareSingleton;
         }
 
-        // BeanFactory
-        FactoryBean factoryBean = (FactoryBean) shareSingleton;
-        return getObjectFromBeanInstance(factoryBean, beanName);
+
+        Object bean = getCachedObjectForFactoryBean(beanName);
+
+        if (bean == null) {
+            // BeanFactory
+            FactoryBean<?> factoryBean = (FactoryBean<?>) shareSingleton;
+            bean = getObjectFromBeanInstance(factoryBean, beanName);
+        }
+
+        return bean;
     }
 
     @Override

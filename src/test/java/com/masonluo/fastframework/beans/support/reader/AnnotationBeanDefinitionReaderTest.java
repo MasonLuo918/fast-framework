@@ -19,6 +19,11 @@ public class AnnotationBeanDefinitionReaderTest {
             }
 
             @Override
+            public void registerClassToBeanName(String className, String beanName) {
+
+            }
+
+            @Override
             public BeanDefinition removeBeanDefinition(String beanName) {
                 return null;
             }
@@ -36,6 +41,11 @@ public class AnnotationBeanDefinitionReaderTest {
             @Override
             public boolean containsBeanDefinition(String beanName) {
                 return false;
+            }
+
+            @Override
+            public String getPrimaryBeanNameForClass(Class<?> clazz) {
+                return null;
             }
         });
 

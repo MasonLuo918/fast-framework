@@ -42,6 +42,7 @@ public abstract class AbstractBeanDefinition extends AttributeAccessorSupport im
 
     public void setBeanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
+        this.beanClassName = beanClass.getName();
     }
 
     @Override
@@ -102,6 +103,10 @@ public abstract class AbstractBeanDefinition extends AttributeAccessorSupport im
     @Override
     public MultiPropertyValues getConstructorPropertyValues() {
         return constructPropertyValues;
+    }
+
+    public boolean hasBeanClass(){
+        return (beanClass != null);
     }
 
     @Override
