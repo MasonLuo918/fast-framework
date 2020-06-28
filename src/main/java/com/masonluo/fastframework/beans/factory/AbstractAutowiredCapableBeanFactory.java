@@ -3,13 +3,20 @@ package com.masonluo.fastframework.beans.factory;
 import com.masonluo.fastframework.beans.BeanWrapper;
 import com.masonluo.fastframework.beans.BeanWrapperImpl;
 import com.masonluo.fastframework.beans.factory.config.GenericBeanDefinition;
+import com.masonluo.fastframework.core.annotation.Autowired;
+import com.masonluo.fastframework.exception.BeansException;
+import com.masonluo.fastframework.utils.AnnotationUtils;
 import com.masonluo.fastframework.utils.Assert;
-import com.masonluo.fastframework.utils.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author masonluo
@@ -58,24 +65,64 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     protected void autowiredByName(Object bean, String beanName, GenericBeanDefinition beanDefinition) {
-        // TODO
+        Class<?> clazz = bean.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields == null || fields.length == 0) {
+            return;
+        }
+        for (Field field : fields) {
+            String name = field.getName();
+            doAutowiredByName(bean, field, name);
+        }
+    }
+
+    private void doAutowiredByName(Object target, Field field, String name) {
+        Assert.notNull(field);
+        Assert.notBlank(name);
+        Assert.notNull(target);
+        field.setAccessible(true);
+        Object bean = getBean(name);
+        if (bean == null) {
+            throw new BeansException("Can't find a bean whose name is [" + name + "] to autowired into the field[" + field.getName() + "]");
+        }
+        try {
+            field.set(target, bean);
+        } catch (IllegalAccessException e) {
+            throw new BeansException("Can't autowired into filed [" + field.getName() + "]");
+        }
     }
 
     protected void autowiredByType(Object bean, String beanName, GenericBeanDefinition beanDefinition) {
-        // TODO
+        Class<?> clazz = bean.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields == null || fields.length == 0){
+            return;
+        }
+        for (Field field : fields){
+            doAutowiredByType(bean, field);
+        }
+    }
+
+    private void doAutowiredByType(Object target, Field field){
+        Assert.notNull(field);
+        Assert.notNull(target);
+        field.setAccessible(true);
+        Object bean = getBean(field.getType());
+        if (bean == null) {
+            throw new BeansException("Can't find a bean whose class is [" + field.getType().getName() + "] to autowired into the field[" + field.getName() + "]");
+        }
+        try {
+            field.set(target, bean);
+        } catch (IllegalAccessException e) {
+            throw new BeansException("Can't autowired into filed [" + field.getName() + "]");
+        }
     }
 
     protected ObjectFactory<?> getEarlyReference(String beanName, Object bean) {
-        return new ObjectFactory<Object>() {
-            @Override
-            public Object getObject() throws RuntimeException {
-                return bean;
-            }
-        };
+        return () -> bean;
     }
 
     protected BeanWrapper createBeanInstance(String beanName, GenericBeanDefinition beanDefinition) throws ClassNotFoundException {
-        //TODO 进行bean的生成
         Object bean = null;
         Class<?> clazz = null;
         if (beanDefinition.hasBeanClass()) {
@@ -92,24 +139,115 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     protected Object useConstructorsToInstantiation(String beanName, GenericBeanDefinition beanDefinition, Constructor[] constructors) {
-        // TODO
         Assert.hasLength(constructors, "The class [" + beanName + "] does not has a constructor");
-        Constructor defaultConstructor = null;
-        List<Constructor> autowiredConstructor = new ArrayList<>();
-        List<Constructor> normalConstructor = new ArrayList<>();
+        Constructor defaultConstructor;
+        List<Constructor> autowiredConstructor = obtainAutowiredConstructor(constructors);
+        List<Constructor> normalConstructor = obtainNormalConstructor(constructors);
+        defaultConstructor = obtainDefaultConstructor(constructors);
+        Object bean = resolveAutowiredConstructors(beanName, beanDefinition, autowiredConstructor.toArray(new Constructor[0]));
+        if (bean == null && defaultConstructor != null) {
+            bean = resolveDefaultConstructor(defaultConstructor);
+        }
+        if (bean == null) {
+            throw new BeansException("Can't find a suitable constructor to initial the bean ");
+        }
+        return bean;
+    }
+
+    protected Object resolveDefaultConstructor(Constructor defaultConstructor) {
+        Object bean = null;
+        try {
+            bean = defaultConstructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return bean;
+    }
+
+
+    private Constructor obtainDefaultConstructor(Constructor[] constructors) {
+        if (constructors == null || constructors.length == 0) {
+            return null;
+        }
         for (Constructor constructor : constructors) {
-            if (constructor.getParameterCount() == 0 && defaultConstructor == null) {
-                defaultConstructor = constructor;
-            } else {
-                Annotation[][] annotations = constructor.getParameterAnnotations();
-                int length = annotations.length;
-                for (Annotation[] annos : annotations){
-                    for (Annotation anno : annos){
-                        if ()
-                    }
-                }
+            if (constructor.getParameterCount() == 0) {
+                return constructor;
             }
         }
         return null;
+    }
+
+    private Object resolveAutowiredConstructors(String beanName, GenericBeanDefinition beanDefinition, Constructor[] constructors) {
+        Object bean;
+        for (Constructor constructor : constructors) {
+            bean = resolveAutowiredConstructor(constructor);
+            if (bean != null) {
+                return bean;
+            }
+        }
+        return null;
+    }
+
+    private Object resolveAutowiredConstructor(Constructor constructor) {
+        Parameter[] parameters = constructor.getParameters();
+        Object[] objects = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            Class<?> clazz = parameter.getType();
+            Object param = getBean(clazz);
+            if (param == null) {
+                return null;
+            }
+            objects[i] = param;
+        }
+        Object bean = null;
+        try {
+            bean = constructor.newInstance(objects);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return bean;
+    }
+
+    private List<Constructor> obtainNormalConstructor(Constructor[] constructors) {
+        List<Constructor> result = Arrays.asList(constructors);
+        result.removeAll(obtainAutowiredConstructor(constructors));
+        result = result.stream()
+                .filter(constructor -> constructor.getParameterCount() != 0)
+                .collect(Collectors.toList());
+        return result;
+    }
+
+    private List<Constructor> obtainAutowiredConstructor(Constructor[] constructors) {
+        List<Constructor> result = new ArrayList<>();
+        for (Constructor constructor : constructors) {
+            if (constructor.getParameterCount() != 0 && isAllAutowiredSigned(constructor)) {
+                result.add(constructor);
+            }
+        }
+        return result;
+    }
+
+    private boolean isAllAutowiredSigned(Constructor constructor) {
+        Assert.notNull(constructor);
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (Annotation[] annos : annotations) {
+            if (!hasAutowiredSign(annos)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasAutowiredSign(Annotation[] annos) {
+        if (annos == null || annos.length == 0) {
+            return false;
+        }
+        for (Annotation anno : annos) {
+            if (AnnotationUtils.isEqual(anno, Autowired.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
