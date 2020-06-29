@@ -59,7 +59,7 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
         if (autowiredMode == AbstractAutowiredCapableBeanFactory.AUTOWIRE_BY_NAME) {
             autowiredByName(bean, beanName, beanDefinition);
         }
-        if (autowiredMode == AbstractAutowiredCapableBeanFactory.AUTO_WIRE_BY_TYPE) {
+        if (autowiredMode == AbstractAutowiredCapableBeanFactory.AUTOWIRE_BY_TYPE) {
             autowiredByType(bean, beanName, beanDefinition);
         }
     }
@@ -77,6 +77,9 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     private void doAutowiredByName(Object target, Field field, String name) {
+        if (!field.isAnnotationPresent(Autowired.class)){
+            return;
+        }
         Assert.notNull(field);
         Assert.notBlank(name);
         Assert.notNull(target);
@@ -104,6 +107,9 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     private void doAutowiredByType(Object target, Field field){
+        if (!field.isAnnotationPresent(Autowired.class)){
+            return;
+        }
         Assert.notNull(field);
         Assert.notNull(target);
         field.setAccessible(true);
@@ -210,7 +216,7 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     private List<Constructor> obtainNormalConstructor(Constructor[] constructors) {
-        List<Constructor> result = Arrays.asList(constructors);
+        List<Constructor> result = new ArrayList<>(Arrays.asList(constructors));
         result.removeAll(obtainAutowiredConstructor(constructors));
         result = result.stream()
                 .filter(constructor -> constructor.getParameterCount() != 0)
@@ -250,4 +256,5 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
         }
         return false;
     }
+
 }

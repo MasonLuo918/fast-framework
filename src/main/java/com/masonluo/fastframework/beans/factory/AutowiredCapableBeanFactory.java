@@ -10,7 +10,7 @@ public interface AutowiredCapableBeanFactory extends BeanFactory {
 
     int AUTOWIRE_BY_NAME = 1;
 
-    int AUTO_WIRE_BY_TYPE = 2;
+    int AUTOWIRE_BY_TYPE = 2;
 
     <T> T createBean(Class<T> beanType);
 }

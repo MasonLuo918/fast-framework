@@ -91,9 +91,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
             }
             GenericBeanDefinition beanDefinition = (GenericBeanDefinition) definition;
             if (beanDefinition.isSingleton()) {
-                shareSingleton = getSingleton(beanName, () -> {
-                    return createBean(beanName, beanDefinition);
-                });
+                shareSingleton = getSingleton(beanName, () -> createBean(beanName, beanDefinition)
+                );
                 bean = getObjectForBeanInstance(shareSingleton, name, beanName);
             } else if (beanDefinition.isPrototype()) {
                 beforePrototypeCreated(beanName);
