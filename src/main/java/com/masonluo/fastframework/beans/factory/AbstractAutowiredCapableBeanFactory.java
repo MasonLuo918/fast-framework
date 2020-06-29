@@ -57,14 +57,14 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
             return;
         }
         if (autowiredMode == AbstractAutowiredCapableBeanFactory.AUTOWIRE_BY_NAME) {
-            autowiredByName(bean, beanName, beanDefinition);
+            autowiredByName(bean);
         }
         if (autowiredMode == AbstractAutowiredCapableBeanFactory.AUTOWIRE_BY_TYPE) {
-            autowiredByType(bean, beanName, beanDefinition);
+            autowiredByType(bean);
         }
     }
 
-    protected void autowiredByName(Object bean, String beanName, GenericBeanDefinition beanDefinition) {
+    protected void autowiredByName(Object bean) {
         Class<?> clazz = bean.getClass();
         Field[] fields = clazz.getDeclaredFields();
         if (fields == null || fields.length == 0) {
@@ -77,7 +77,7 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
     }
 
     private void doAutowiredByName(Object target, Field field, String name) {
-        if (!field.isAnnotationPresent(Autowired.class)){
+        if (!field.isAnnotationPresent(Autowired.class)) {
             return;
         }
         Assert.notNull(field);
@@ -89,25 +89,27 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
             throw new BeansException("Can't find a bean whose name is [" + name + "] to autowired into the field[" + field.getName() + "]");
         }
         try {
-            field.set(target, bean);
+            if (field.get(target) != null) {
+                field.set(target, bean);
+            }
         } catch (IllegalAccessException e) {
             throw new BeansException("Can't autowired into filed [" + field.getName() + "]");
         }
     }
 
-    protected void autowiredByType(Object bean, String beanName, GenericBeanDefinition beanDefinition) {
+    protected void autowiredByType(Object bean) {
         Class<?> clazz = bean.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        if (fields == null || fields.length == 0){
+        if (fields == null || fields.length == 0) {
             return;
         }
-        for (Field field : fields){
+        for (Field field : fields) {
             doAutowiredByType(bean, field);
         }
     }
 
-    private void doAutowiredByType(Object target, Field field){
-        if (!field.isAnnotationPresent(Autowired.class)){
+    private void doAutowiredByType(Object target, Field field) {
+        if (!field.isAnnotationPresent(Autowired.class)) {
             return;
         }
         Assert.notNull(field);
@@ -118,7 +120,9 @@ public abstract class AbstractAutowiredCapableBeanFactory extends AbstractBeanFa
             throw new BeansException("Can't find a bean whose class is [" + field.getType().getName() + "] to autowired into the field[" + field.getName() + "]");
         }
         try {
-            field.set(target, bean);
+            if (field.get(target) != null) {
+                field.set(target, bean);
+            }
         } catch (IllegalAccessException e) {
             throw new BeansException("Can't autowired into filed [" + field.getName() + "]");
         }

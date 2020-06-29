@@ -39,7 +39,6 @@ public interface BeanFactory {
 
     /**
      * 根据requiredType来获取一个符合类型的bean
-     * TODO 构造一个class-beanName map，用来查找所需类型的bean
      */
     <T> T getBean(Class<T> requiredType) throws BeansException;
 

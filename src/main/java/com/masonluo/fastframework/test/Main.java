@@ -5,9 +5,7 @@ import com.masonluo.fastframework.beans.factory.DefaultAutowiredCapableBeanFacto
 import com.masonluo.fastframework.beans.factory.config.GenericBeanDefinition;
 
 /**
- * // TODO 查看循环依赖解决处
- * // TODO 1. 添加有参数的getBean
- * // TODO 2. 解决构造参数注入和setter注入冲突的情况
+ * TODO 1. 添加有参数的getBean
  * @author masonluo
  * @date 2020/6/27 9:49 PM
  */
