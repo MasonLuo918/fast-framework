@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/6/28 4:11 PM
  */
 public class DefaultAutowiredCapableBeanFactory extends AbstractAutowiredCapableBeanFactory
-        implements BeanDefinitionRegistry {
+        implements ConfigurableAutowireCapableBeanFactory, BeanDefinitionRegistry {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
@@ -71,7 +71,7 @@ public class DefaultAutowiredCapableBeanFactory extends AbstractAutowiredCapable
     public String getPrimaryBeanNameForClass(Class<?> clazz) {
         String beanName = clazz.getName();
         Set<String> beanNameSet = classToBeanName.get(beanName);
-        if (beanNameSet == null || beanNameSet.isEmpty()){
+        if (beanNameSet == null || beanNameSet.isEmpty()) {
             return null;
         }
         TreeSet<String> set = (TreeSet<String>) beanNameSet;

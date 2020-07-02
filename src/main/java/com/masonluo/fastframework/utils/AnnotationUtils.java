@@ -7,14 +7,13 @@ import java.lang.annotation.Annotation;
  * @date 2020/6/28 1:38 PM
  */
 public class AnnotationUtils {
-    public static boolean isEqual(Annotation annotation, Class<?> clazz){
-        if (annotation == null && clazz == null){
+    public static boolean isEqual(Annotation annotation, Class<?> clazz) {
+        if (annotation == null && clazz == null) {
             return true;
         }
-        if (annotation == null || clazz == null){
+        if (annotation == null || clazz == null) {
             return false;
         }
         return annotation.annotationType().equals(clazz);
     }
-
 }

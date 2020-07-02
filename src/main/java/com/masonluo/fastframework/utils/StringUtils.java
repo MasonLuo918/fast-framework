@@ -30,4 +30,19 @@ public class StringUtils {
         }
         return str1.equals(str2);
     }
+
+    public static String packageToPath(String pack) {
+        if (pack == null || pack.length() == 0) {
+            return null;
+        }
+        return pack.replaceAll("\\.", "/");
+    }
+
+    public static String append(String... strs){
+        StringBuilder builder = new StringBuilder();
+        for (String str : strs){
+            builder.append(str);
+        }
+        return builder.toString();
+    }
 }

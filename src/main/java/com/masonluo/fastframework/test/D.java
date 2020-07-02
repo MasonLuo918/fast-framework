@@ -1,11 +1,13 @@
 package com.masonluo.fastframework.test;
 
+import com.masonluo.fastframework.beans.stereotype.Controller;
 import com.masonluo.fastframework.core.annotation.Autowired;
 
 /**
  * @author masonluo
  * @date 2020/6/29 12:01 PM
  */
+@Controller
 public class D {
     @Autowired
     private C c;

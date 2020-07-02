@@ -1,5 +1,6 @@
 package com.masonluo.fastframework.context;
 
+import com.masonluo.fastframework.beans.factory.AutowiredCapableBeanFactory;
 import com.masonluo.fastframework.beans.factory.ConfigurableBeanFactory;
 import com.masonluo.fastframework.beans.factory.HierarchicalBeanFactory;
 import com.masonluo.fastframework.utils.annotation.Nullable;
@@ -11,8 +12,6 @@ import com.masonluo.fastframework.utils.annotation.Nullable;
 public interface ApplicationContext extends ConfigurableBeanFactory, HierarchicalBeanFactory {
     /**
      * Returns the unique id of application context
-     *
-     * @return
      */
     @Nullable
     String getId();
@@ -21,5 +20,7 @@ public interface ApplicationContext extends ConfigurableBeanFactory, Hierarchica
     String getApplicationContextName();
 
     @Nullable
-    String getParentApplicationContext();
+    ApplicationContext getParentApplicationContext();
+
+    AutowiredCapableBeanFactory getAutowiredCapableBeanFactory();
 }
