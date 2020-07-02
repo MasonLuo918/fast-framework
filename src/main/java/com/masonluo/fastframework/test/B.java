@@ -1,6 +1,7 @@
 package com.masonluo.fastframework.test;
 
 
+import com.masonluo.fastframework.beans.annotation.ComponentScan;
 import com.masonluo.fastframework.beans.annotation.Configuration;
 import com.masonluo.fastframework.core.annotation.Autowired;
 
@@ -9,6 +10,7 @@ import com.masonluo.fastframework.core.annotation.Autowired;
  * @date 2020/6/29 12:00 PM
  */
 @Configuration
+@ComponentScan(basePackages = "com.masonluo.fastframework.utils")
 public class B {
 
     private A a;

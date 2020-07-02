@@ -4,6 +4,8 @@ import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
  * @author masonluo
  * @date 2020/6/22 4:14 PM
@@ -13,6 +15,11 @@ public class AnnotationBeanDefinitionReaderTest {
     @Test
     public void testRegisterBean(){
         AnnotationBeanDefinitionReader reader = new AnnotationBeanDefinitionReader(new BeanDefinitionRegistry() {
+            @Override
+            public Map<String, BeanDefinition> getBeanDefinitions() {
+                return null;
+            }
+
             @Override
             public void registryBeanDefinition(String beanName, BeanDefinition definition) {
 

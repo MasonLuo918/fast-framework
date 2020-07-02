@@ -17,11 +17,11 @@ public interface AnnotationMetaData {
         return getAnnotations().length;
     }
 
-    default boolean hasAnnotation(Class<?> clazz) {
+    default boolean hasAnnotation(Class<? extends Annotation> clazz) {
         return getAnnotation(clazz) != null;
     }
 
-    default Annotation getAnnotation(Class<?> clazz) {
+    default Annotation getAnnotation(Class<? extends Annotation> clazz) {
         if (getAnnotations() == null) {
             return null;
         }

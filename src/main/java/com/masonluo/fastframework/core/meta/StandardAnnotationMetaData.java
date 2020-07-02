@@ -34,13 +34,6 @@ public class StandardAnnotationMetaData implements AnnotationMetaData {
                 .collect(Collectors.toSet());
     }
 
-    public static void main(String[] args) {
-        StandardAnnotationMetaData metaData = new StandardAnnotationMetaData(AnnotationConfigUtils.class);
-        for (String str : metaData.getAnnotationType()){
-            System.out.println(str);
-        }
-    }
-
     public Class<?> getOriginClass() {
         return originClass;
     }

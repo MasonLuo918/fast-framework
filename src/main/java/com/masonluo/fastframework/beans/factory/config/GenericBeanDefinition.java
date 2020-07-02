@@ -9,7 +9,7 @@ import com.masonluo.fastframework.beans.factory.AutowiredCapableBeanFactory;
  */
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
-    private int autowireMode = AutowiredCapableBeanFactory.AUTOWIRE_NO;
+    private int autowireMode = AutowiredCapableBeanFactory.AUTOWIRE_BY_TYPE;
 
     public GenericBeanDefinition(){
         super();

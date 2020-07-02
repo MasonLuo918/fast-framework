@@ -1,6 +1,7 @@
 package com.masonluo.fastframework.utils;
 
 import com.masonluo.fastframework.beans.factory.config.AnnotationBeanDefinition;
+import com.masonluo.fastframework.beans.stereotype.Component;
 import com.masonluo.fastframework.core.annotation.Lazy;
 import com.masonluo.fastframework.core.annotation.Primary;
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
  * @author masonluo
  * @date 2020/6/22 5:25 PM
  */
-@Primary(value = false)
+@Component
 public class AnnotationConfigUtils {
     /**
      * 处理通用的注解
@@ -57,7 +58,7 @@ public class AnnotationConfigUtils {
      * @param <T>
      * @return
      */
-    public static <T> T getAnnotation(AnnotationMetaData metaData, Class<T> type) {
+    public static <T extends Annotation> T getAnnotation(AnnotationMetaData metaData, Class<T> type) {
         Annotation annotation = metaData.getAnnotation(type);
         if (annotation != null) {
             return type.cast(annotation);

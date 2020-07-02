@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  * @author masonluo
  * @date 2020/6/30 10:55 PM
  */
-public class ClassPathScanner implements ConfigurableScanner {
+public class ClassPathBeanDefinitionScanner implements ConfigurableScanner {
 
     private BeanDefinitionRegistry registry;
 
@@ -34,11 +34,11 @@ public class ClassPathScanner implements ConfigurableScanner {
 
     private Set<String> scanClassName = new HashSet<>();
 
-    public ClassPathScanner(BeanDefinitionRegistry registry) {
+    public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
         this(registry, true);
     }
 
-    public ClassPathScanner(BeanDefinitionRegistry registry, boolean registerDefaultAnnotation) {
+    public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry, boolean registerDefaultAnnotation) {
         this.registry = registry;
         if (registerDefaultAnnotation) {
             registerDefaultAnnotation();
@@ -118,7 +118,7 @@ public class ClassPathScanner implements ConfigurableScanner {
 
     public static void main(String[] args) {
         DefaultAutowiredCapableBeanFactory beanFactory = new DefaultAutowiredCapableBeanFactory();
-        ClassPathScanner classPathScanner = new ClassPathScanner(beanFactory);
+        ClassPathBeanDefinitionScanner classPathScanner = new ClassPathBeanDefinitionScanner(beanFactory);
         classPathScanner.scan("com.masonluo.fastframework.test");
         System.out.println();
     }

@@ -12,6 +12,7 @@ import com.masonluo.fastframework.utils.ClassUtils;
 import com.masonluo.fastframework.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 
 /**
  * @author masonluo
@@ -73,6 +74,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
         AnnotationBeanDefinition beanDefinition = new StandardAnnotationBeanDefinition(AnnotationBeanNameGenerator.class);
         AnnotationBeanNameGenerator generator = new AnnotationBeanNameGenerator();
         String beanName = generator.generateBeanName(beanDefinition, new BeanDefinitionRegistry() {
+            @Override
+            public Map<String, BeanDefinition> getBeanDefinitions() {
+                return null;
+            }
+
             @Override
             public void registryBeanDefinition(String beanName, BeanDefinition definition) {
 

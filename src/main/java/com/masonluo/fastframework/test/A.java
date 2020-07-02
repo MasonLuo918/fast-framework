@@ -8,7 +8,6 @@ import com.masonluo.fastframework.beans.stereotype.Component;
  * @date 2020/6/29 11:57 AM
  */
 @Component
-@ComponentScan(basePackages = "com")
 public class A {
 
     private String name;

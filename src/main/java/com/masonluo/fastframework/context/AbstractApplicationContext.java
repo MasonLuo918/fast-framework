@@ -3,9 +3,12 @@ package com.masonluo.fastframework.context;
 import com.masonluo.fastframework.beans.factory.AutowiredCapableBeanFactory;
 import com.masonluo.fastframework.beans.factory.BeanFactory;
 import com.masonluo.fastframework.beans.factory.ConfigurableAutowireCapableBeanFactory;
+import com.masonluo.fastframework.beans.factory.support.BeanFactoryPostProcessor;
 import com.masonluo.fastframework.exception.BeanNotFoundException;
 import com.masonluo.fastframework.exception.BeansException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -20,6 +23,8 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     private String applicationContextName;
 
     private ApplicationContext parent;
+
+    private List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
     private Lock startupShutdownMonitor = new ReentrantLock();
 

@@ -82,4 +82,10 @@ public class DefaultAutowiredCapableBeanFactory extends AbstractAutowiredCapable
     protected BeanDefinition getBeanDefinition(String beanName) {
         return beanDefinitionMap.get(beanName);
     }
+
+    @Override
+    public Map<String, BeanDefinition> getBeanDefinitions() {
+        return beanDefinitionMap;
+    }
+
 }
