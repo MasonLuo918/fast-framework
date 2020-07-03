@@ -79,6 +79,7 @@ public class ClassPathBeanDefinitionScanner implements ConfigurableScanner {
         });
     }
 
+
     private void doScan(String className) {
         try {
             Class<?> clazz = Class.forName(className);

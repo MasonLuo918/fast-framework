@@ -88,4 +88,18 @@ public class DefaultAutowiredCapableBeanFactory extends AbstractAutowiredCapable
         return beanDefinitionMap;
     }
 
+    @Override
+    public void preInstantiateSingletons() {
+        String[] beanNames = getBeanDefinitionNames();
+        for (String beanName : beanNames) {
+            BeanDefinition definition = getBeanDefinition(beanName);
+            if (definition.isSingleton() && !definition.isLazyInit()) {
+                if (isFactoryBean(beanName)) {
+                    getBean(FACTORY_BEAN_PREFIX + beanName);
+                } else {
+                    getBean(beanName);
+                }
+            }
+        }
+    }
 }

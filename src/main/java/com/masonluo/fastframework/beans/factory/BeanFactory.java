@@ -51,4 +51,6 @@ public interface BeanFactory {
      * 判断一个bean是否是原型模式
      */
     boolean isPrototype(String beanName);
+
+    boolean isFactoryBean(String beanName);
 }

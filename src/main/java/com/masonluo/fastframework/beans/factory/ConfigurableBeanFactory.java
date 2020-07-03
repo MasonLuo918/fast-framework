@@ -6,4 +6,6 @@ package com.masonluo.fastframework.beans.factory;
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
     void setParentBeanFactory(BeanFactory parent);
+
+    void preInstantiateSingletons();
 }

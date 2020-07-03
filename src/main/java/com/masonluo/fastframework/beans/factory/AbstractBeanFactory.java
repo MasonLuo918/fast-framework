@@ -219,6 +219,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanSupportRegister imp
         return definition != null && definition.isPrototype();
     }
 
+    @Override
+    public boolean isFactoryBean(String name) {
+        String beanName = transformBeanName(name);
+        BeanDefinition definition = getBeanDefinition(beanName);
+        return FactoryBean.class.getName().equals(definition.getBeanClassName());
+    }
+
     protected abstract boolean containsBeanDefinition(String beanName);
 
     protected abstract Object createBean(String beanName, GenericBeanDefinition beanDefinition);

@@ -5,7 +5,6 @@ import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
 import com.masonluo.fastframework.beans.factory.config.StandardAnnotationBeanDefinition;
 import com.masonluo.fastframework.core.annotation.AnnotationAttributes;
 import com.masonluo.fastframework.core.meta.AnnotationMetaData;
-import com.masonluo.fastframework.exception.BeanDefinitionExistException;
 import com.masonluo.fastframework.exception.RepeatedlyBeanNameException;
 import com.masonluo.fastframework.utils.AnnotationConfigUtils;
 import com.masonluo.fastframework.utils.ClassUtils;
@@ -33,7 +32,10 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
             beanName = generateDefaultBeanName(definition);
         }
         if (registry.containsBeanDefinition(beanName)) {
-            throw new BeanDefinitionExistException();
+            // BeanNameGenerator只应该生成BeanName，不应该去做异常抛出
+            // 具体是否要抛出异常，留待外部判断
+//            throw new BeanDefinitionExistException();
+            return null;
         }
 
         return beanName;
@@ -47,6 +49,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
     /**
      * 根据注解的value生成beanName
      * TODO 只能根据特定注解生成，比如{@link com.masonluo.fastframework.beans.stereotype.Component}
+     *
      * @param annotationMetaData
      * @return
      */

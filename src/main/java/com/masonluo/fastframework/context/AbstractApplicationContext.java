@@ -3,7 +3,11 @@ package com.masonluo.fastframework.context;
 import com.masonluo.fastframework.beans.factory.AutowiredCapableBeanFactory;
 import com.masonluo.fastframework.beans.factory.BeanFactory;
 import com.masonluo.fastframework.beans.factory.ConfigurableAutowireCapableBeanFactory;
+import com.masonluo.fastframework.beans.factory.ConfigurableBeanFactory;
+import com.masonluo.fastframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import com.masonluo.fastframework.beans.factory.support.BeanFactoryPostProcessor;
+import com.masonluo.fastframework.beans.factory.support.ConfigurationClassPostProcessor;
+import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
 import com.masonluo.fastframework.exception.BeanNotFoundException;
 import com.masonluo.fastframework.exception.BeansException;
 
@@ -29,19 +33,42 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     private Lock startupShutdownMonitor = new ReentrantLock();
 
     public AbstractApplicationContext() {
-
+        this(null);
     }
 
     public AbstractApplicationContext(ApplicationContext parent) {
+        registerDefaultBeanFactoryPostProcessor();
         this.parent = parent;
     }
 
 
-    // TODO
     @Override
     public void refresh() {
         startupShutdownMonitor.lock();
         ConfigurableAutowireCapableBeanFactory beanFactory = obtainFreshBeanFactory();
+        prepareBeanFactory(beanFactory);
+        invokeBeanFactoryPostProcessor(beanFactory);
+        finishBeanFactoryInitialization(beanFactory);
+    }
+
+    private void finishBeanFactoryInitialization(ConfigurableAutowireCapableBeanFactory beanFactory) {
+        beanFactory.preInstantiateSingletons();
+    }
+
+    protected void invokeBeanFactoryPostProcessor(ConfigurableBeanFactory beanFactory) {
+        if (beanFactoryPostProcessors.size() != 0) {
+            beanFactoryPostProcessors.forEach(beanFactoryPostProcessor -> {
+                beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+                if (beanFactoryPostProcessor instanceof BeanDefinitionRegistryPostProcessor
+                        && beanFactory instanceof BeanDefinitionRegistry) {
+                    BeanDefinitionRegistryPostProcessor registryPostProcessor = (BeanDefinitionRegistryPostProcessor) beanFactoryPostProcessor;
+                    registryPostProcessor.postProcessBeanDefinitionRegistry((BeanDefinitionRegistry) beanFactory);
+                }
+            });
+        }
+    }
+
+    protected void prepareBeanFactory(ConfigurableAutowireCapableBeanFactory beanFactory) {
     }
 
     /**
@@ -126,6 +153,27 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     public boolean isPrototype(String beanName) {
         return getBeanFactory().isPrototype(beanName);
     }
+
+    public void addBeanFactoryPostProcessor(BeanFactoryPostProcessor processor) {
+        beanFactoryPostProcessors.add(processor);
+    }
+
+
+    protected void registerDefaultBeanFactoryPostProcessor() {
+        beanFactoryPostProcessors.add(new ConfigurationClassPostProcessor());
+    }
+
+
+    @Override
+    public void preInstantiateSingletons() {
+        getBeanFactory().preInstantiateSingletons();
+    }
+
+    @Override
+    public boolean isFactoryBean(String beanName) {
+        return getBeanFactory().isFactoryBean(beanName);
+    }
+
 
     public abstract ConfigurableAutowireCapableBeanFactory getBeanFactory();
 
