@@ -4,6 +4,8 @@ import com.masonluo.fastframework.beans.MultiPropertyValues;
 import com.masonluo.fastframework.core.AttributeAccessorSupport;
 
 /**
+ * 一个抽象的BeanDefinition， 实现{@link BeanDefinition}接口
+ *
  * @author masonluo
  * @date 2020/6/22 10:29 AM
  */
