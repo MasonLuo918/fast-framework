@@ -74,7 +74,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
         try {
             Class<?> clazz = Class.forName(className);
             if (clazz.isAnnotationPresent(Configuration.class) && clazz.isAnnotationPresent(ComponentScan.class)) {
-                ComponentScan componentScan = (ComponentScan) clazz.getAnnotation(ComponentScan.class);
+                ComponentScan componentScan = clazz.getAnnotation(ComponentScan.class);
                 String[] basePackages = componentScan.basePackages();
                 basePackages = removeHasBeenScannedPackage(basePackages, packageHasBennScanned);
                 return new ComponentScanClass(basePackages, className, null);

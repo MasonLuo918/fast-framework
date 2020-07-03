@@ -10,6 +10,7 @@ import com.masonluo.fastframework.beans.stereotype.Service;
 import com.masonluo.fastframework.beans.support.AnnotationBeanNameGenerator;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
 import com.masonluo.fastframework.beans.support.BeanNameGenerator;
+import com.masonluo.fastframework.exception.BeanDefinitionExistException;
 import com.masonluo.fastframework.utils.AnnotationConfigUtils;
 import com.masonluo.fastframework.utils.StringUtils;
 
@@ -89,6 +90,8 @@ public class ClassPathBeanDefinitionScanner implements ConfigurableScanner {
                 String name = nameGenerator.generateBeanName(beanDefinition, getRegistry());
                 if (name != null) {
                     getRegistry().registryBeanDefinition(name, beanDefinition);
+                } else {
+                    throw new BeanDefinitionExistException("can not generate a bean name for " + beanDefinition.getBeanClassName());
                 }
             }
         } catch (ClassNotFoundException e) {

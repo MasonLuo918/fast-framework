@@ -1,9 +1,14 @@
 package com.masonluo.fastframework.beans.factory;
 
+import com.masonluo.fastframework.beans.annotation.Bean;
 import com.masonluo.fastframework.beans.factory.config.BeanDefinition;
 import com.masonluo.fastframework.beans.support.BeanDefinitionRegistry;
+import com.masonluo.fastframework.beans.support.SingletonBeanRegistry;
 import com.masonluo.fastframework.utils.Assert;
+import com.masonluo.fastframework.utils.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -94,12 +99,60 @@ public class DefaultAutowiredCapableBeanFactory extends AbstractAutowiredCapable
         for (String beanName : beanNames) {
             BeanDefinition definition = getBeanDefinition(beanName);
             if (definition.isSingleton() && !definition.isLazyInit()) {
+                Object bean = null;
                 if (isFactoryBean(beanName)) {
-                    getBean(FACTORY_BEAN_PREFIX + beanName);
+                    bean = getBean(FACTORY_BEAN_PREFIX + beanName);
                 } else {
-                    getBean(beanName);
+                    bean = getBean(beanName);
+                }
+                if (bean != null) {
+                    resolveBeanAnnotated(bean, this);
                 }
             }
         }
     }
+
+    private void resolveBeanAnnotated(Object target, SingletonBeanRegistry registry) {
+        Class<?> clazz = target.getClass();
+        doResolveBeanAnnotation(target, clazz.getDeclaredMethods(), registry);
+    }
+
+    private void doResolveBeanAnnotation(Object target, Method[] declaredMethods, SingletonBeanRegistry registry) {
+        if (declaredMethods == null || declaredMethods.length == 0) {
+            return;
+        }
+        for (Method method : declaredMethods) {
+            resolveBeanAnnotatedMethod(target, method, registry);
+        }
+    }
+
+    private void resolveBeanAnnotatedMethod(Object target, Method method, SingletonBeanRegistry registry) {
+        Assert.notNull(method);
+        Assert.notNull(registry);
+        if (method.isAnnotationPresent(Bean.class)) {
+            String beanName = method.getName();
+            Object bean = invokeMethod(target, method);
+            Bean beanAnnotation = method.getAnnotation(Bean.class);
+            if (!StringUtils.isBlank(beanAnnotation.value())) {
+                beanName = beanAnnotation.value();
+            }
+            registry.registerSingleton(beanName, bean);
+        }
+    }
+
+    private Object invokeMethod(Object target, Method method) {
+        try {
+            Class<?>[] classes = method.getParameterTypes();
+            Object[] objects = new Object[classes.length];
+            for (int i = 0; i < classes.length; i++) {
+                Object bean = getBean(classes[i]);
+                objects[i] = bean;
+            }
+            return method.invoke(target, objects);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
