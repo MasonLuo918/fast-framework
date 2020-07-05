@@ -5,6 +5,8 @@ import com.masonluo.fastframework.beans.annotation.Configuration;
 import com.masonluo.fastframework.context.AnnotationConfigApplicationContext;
 import com.masonluo.fastframework.test.Animal;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author masonluo
  * @date 2020/7/2 5:05 PM
@@ -12,7 +14,7 @@ import com.masonluo.fastframework.test.Animal;
 @Configuration
 @ComponentScan(basePackages = "com.masonluo.fastframework.test")
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext(Main.class);
         System.out.println(configApplicationContext.getBean(Animal.class));
     }
